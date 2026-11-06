@@ -1,0 +1,62 @@
+<tr id="ticket-row-{{ ticket.id }}">
+    <td>
+        <strong>{{ ticket.ticket_id }}</strong><br>
+        <small>{{ ticket.customer_email }}</small><br>
+        <small>Event: {{ ticket.event_id }}</small>
+    </td>
+    <td>
+        <div>{{ ticket.message }}</div>
+        {% if ticket.matched_articles %}
+        <div style="margin-top: 8px; font-size: 0.85em;">
+            <strong>Статті БЗ:</strong>
+            <ul style="margin: 4px 0 0 16px; padding: 0;">
+                {% for art in ticket.matched_articles %}
+                <li><a href="{{ art.url }}" target="_blank" rel="noopener">{{ art.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </td>
+    <td>
+        <span class="badge badge-{{ ticket.status.value }}">{{ ticket.status.value }}</span>
+        {% if ticket.delivery_attempts > 0 %}
+        <div style="font-size: 0.8em; margin-top: 4px;">Спроб відправки: {{ ticket.delivery_attempts }}</div>
+        {% endif %}
+        {% if ticket.last_error %}
+        <div style="color: #b91c1c; font-size: 0.8em; margin-top: 4px;">{{ ticket.last_error }}</div>
+        {% endif %}
+    </td>
+    <td>
+        {% if ticket.status.value in ["READY_FOR_REVIEW", "DELIVERY_FAILED"] %}
+        <form
+            hx-post="/tickets/{{ ticket.id }}/approve"
+            hx-target="#ticket-row-{{ ticket.id }}"
+            hx-swap="outerHTML"
+            method="post"
+            action="/tickets/{{ ticket.id }}/approve"
+        >
+            <textarea
+                name="draft_reply"
+                rows="5"
+                style="width: 100%; box-sizing: border-box; font-family: inherit; font-size: 0.9em; padding: 6px;"
+            >{{ ticket.draft_reply or "" }}</textarea>
+            <div style="margin-top: 6px; display: flex; gap: 8px;">
+                <button type="submit" class="btn btn-approve">Підтвердити і надіслати</button>
+                <button
+                    type="button"
+                    class="btn btn-reject"
+                    hx-post="/tickets/{{ ticket.id }}/reject"
+                    hx-target="#ticket-row-{{ ticket.id }}"
+                    hx-swap="outerHTML"
+                >Відхилити</button>
+            </div>
+        </form>
+        {% elif ticket.status.value in ["NEW", "GENERATING_DRAFT"] %}
+        <div style="color: #6b7280; font-style: italic;">
+            Генерується чернетка відповіді через LLM (5–30 сек)...
+        </div>
+        {% else %}
+        <div style="white-space: pre-wrap; font-size: 0.9em;">{{ ticket.draft_reply or "—" }}</div>
+        {% endif %}
+    </td>
+</tr>

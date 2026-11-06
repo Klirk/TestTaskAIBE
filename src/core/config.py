@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     )
 
     database_url: str
+    celery_broker_url: str
 
     llm_api_key: str
     llm_base_url: str
