@@ -2,6 +2,12 @@
 
 Асинхронний бекенд-сервіс для автоматичної підготовки чернеток відповідей служби підтримки за допомогою LLM та бази знань (RAG) із вебінтерфейсом модерації оператора та захистом від дублікатів.
 
+## Розгорнутий сервіс (Public Demo)
+
+- **Інтерфейс оператора**: [https://testtaskaibe-production.up.railway.app/](https://testtaskaibe-production.up.railway.app/)
+- **Вебхук хелпдеску**: `POST https://testtaskaibe-production.up.railway.app/webhooks/helpdesk`
+- **Swagger / OpenAPI**: [https://testtaskaibe-production.up.railway.app/docs](https://testtaskaibe-production.up.railway.app/docs)
+
 ## Стек технологій
 
 - **Python 3.14** (`asyncio`)
