@@ -40,6 +40,10 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       CELERY_BROKER_URL: amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq:5672//
+    command:
+      - "sh"
+      - "-c"
+      - "alembic upgrade head && uvicorn src.main:app --host 0.0.0.0 --port 8000"
     ports:
       - "8000:8000"
     depends_on:

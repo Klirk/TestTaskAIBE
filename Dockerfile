@@ -19,4 +19,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "alembic upgrade head && uvicorn src.main:app --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "alembic upgrade head && celery -A src.workers.celery_app:celery_app worker --loglevel=info --pool=threads --concurrency=${WORKER_CONCURRENCY:-25} & exec uvicorn src.main:app --host 0.0.0.0 --port 8000"]
